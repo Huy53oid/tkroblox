@@ -2,86 +2,132 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quản lý tài khoản</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 20px;
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
     }
-    input {
-      margin: 5px;
-      padding: 8px;
+    .container {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+      width: 350px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .input-group {
+      margin-bottom: 15px;
+      position: relative;
+    }
+    .input-group input {
+      width: 100%;
+      padding: 10px 40px 10px 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    .toggle-password {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      font-size: 14px;
+      color: #555;
     }
     button {
-      padding: 8px 12px;
-      margin: 5px;
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      background: #2575fc;
+      color: white;
+      font-size: 16px;
       cursor: pointer;
     }
+    button:hover {
+      background: #1a5edb;
+    }
     table {
-      border-collapse: collapse;
-      margin-top: 20px;
       width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
     }
     th, td {
-      border: 1px solid #ccc;
+      border: 1px solid #ddd;
       padding: 8px;
-      text-align: left;
+      font-size: 13px;
+      text-align: center;
+    }
+    th {
+      background: #f4f4f4;
     }
   </style>
 </head>
 <body>
-  <h2>Thêm tài khoản</h2>
-  <input type="text" id="username" placeholder="Username">
-  <input type="password" id="password" placeholder="Password">
-  <input type="email" id="gmail" placeholder="Gmail">
-  <button onclick="addAccount()">Thêm</button>
+  <div class="container">
+    <h2>Thêm tài khoản</h2>
+    <div class="input-group">
+      <input type="text" id="username" placeholder="Tên đăng nhập">
+    </div>
+    <div class="input-group">
+      <input type="password" id="password" placeholder="Mật khẩu">
+      <span class="toggle-password" onclick="togglePassword()">👁</span>
+    </div>
+    <div class="input-group">
+      <input type="email" id="email" placeholder="Email liên kết">
+    </div>
+    <button onclick="addAccount()">Thêm</button>
 
-  <h2>Danh sách tài khoản</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Username</th>
-        <th>Password</th>
-        <th>Gmail</th>
-      </tr>
-    </thead>
-    <tbody id="accountList"></tbody>
-  </table>
+    <table id="accountTable">
+      <thead>
+        <tr>
+          <th>Tên đăng nhập</th>
+          <th>Mật khẩu</th>
+          <th>Email</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
 
   <script>
-    let accounts = JSON.parse(localStorage.getItem("accounts")) || [];
-
-    function renderAccounts() {
-      const list = document.getElementById("accountList");
-      list.innerHTML = "";
-      accounts.forEach(acc => {
-        list.innerHTML += `
-          <tr>
-            <td>${acc.username}</td>
-            <td>${acc.password}</td>
-            <td>${acc.gmail}</td>
-          </tr>`;
-      });
+    function togglePassword() {
+      const passField = document.getElementById("password");
+      passField.type = passField.type === "password" ? "text" : "password";
     }
 
     function addAccount() {
       const username = document.getElementById("username").value;
       const password = document.getElementById("password").value;
-      const gmail = document.getElementById("gmail").value;
+      const email = document.getElementById("email").value;
 
-      if (username && password && gmail) {
-        accounts.push({ username, password, gmail });
-        localStorage.setItem("accounts", JSON.stringify(accounts));
-        renderAccounts();
-        document.getElementById("username").value = "";
-        document.getElementById("password").value = "";
-        document.getElementById("gmail").value = "";
-      } else {
+      if (!username || !password || !email) {
         alert("Vui lòng nhập đầy đủ thông tin!");
+        return;
       }
-    }
 
-    renderAccounts();
+      const table = document.getElementById("accountTable").querySelector("tbody");
+      const row = table.insertRow();
+      row.insertCell(0).innerText = username;
+      row.insertCell(1).innerText = password;
+      row.insertCell(2).innerText = email;
+
+      // Clear input
+      document.getElementById("username").value = "";
+      document.getElementById("password").value = "";
+      document.getElementById("email").value = "";
+    }
   </script>
 </body>
 </html>
