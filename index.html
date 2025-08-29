@@ -36,7 +36,7 @@
       border: 1px solid #ccc;
       border-radius: 6px;
       font-size: 14px;
-      box-sizing: border-box; /* Dòng đã sửa */
+      box-sizing: border-box; /* Sửa lỗi tràn ô nhập liệu */
     }
     .toggle-password {
       position: absolute;
@@ -175,6 +175,34 @@
   </div>
 
   <script>
+    let accounts = [];
+
+    function saveAccounts() {
+      localStorage.setItem('accounts', JSON.stringify(accounts));
+    }
+
+    function renderAccounts() {
+      const tableBody = document.getElementById("accountTable").querySelector("tbody");
+      tableBody.innerHTML = ''; 
+      accounts.forEach(account => {
+        const row = tableBody.insertRow();
+        row.insertCell(0).innerText = account.username;
+        row.insertCell(1).innerText = account.password;
+        row.insertCell(2).innerText = account.email;
+      });
+    }
+
+    function loadAccounts() {
+      const storedAccounts = localStorage.getItem('accounts');
+      if (storedAccounts) {
+        accounts = JSON.parse(storedAccounts);
+        renderAccounts();
+      }
+    }
+
+    // Tải danh sách tài khoản khi trang web được mở
+    window.onload = loadAccounts;
+
     function togglePassword() {
       const passField = document.getElementById("password");
       passField.type = passField.type === "password" ? "text" : "password";
@@ -190,11 +218,10 @@
         return;
       }
 
-      const table = document.getElementById("accountTable").querySelector("tbody");
-      const row = table.insertRow();
-      row.insertCell(0).innerText = username;
-      row.insertCell(1).innerText = password;
-      row.insertCell(2).innerText = email;
+      const newAccount = { username, password, email };
+      accounts.push(newAccount);
+      saveAccounts(); 
+      renderAccounts(); 
 
       document.getElementById("username").value = "";
       document.getElementById("password").value = "";
