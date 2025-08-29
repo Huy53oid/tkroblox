@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Quản lý tài khoản</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    input {
+      margin: 5px;
+      padding: 8px;
+    }
+    button {
+      padding: 8px 12px;
+      margin: 5px;
+      cursor: pointer;
+    }
+    table {
+      border-collapse: collapse;
+      margin-top: 20px;
+      width: 100%;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <h2>Thêm tài khoản</h2>
+  <input type="text" id="username" placeholder="Username">
+  <input type="password" id="password" placeholder="Password">
+  <input type="email" id="gmail" placeholder="Gmail">
+  <button onclick="addAccount()">Thêm</button>
+
+  <h2>Danh sách tài khoản</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Password</th>
+        <th>Gmail</th>
+      </tr>
+    </thead>
+    <tbody id="accountList"></tbody>
+  </table>
+
+  <script>
+    let accounts = JSON.parse(localStorage.getItem("accounts")) || [];
+
+    function renderAccounts() {
+      const list = document.getElementById("accountList");
+      list.innerHTML = "";
+      accounts.forEach(acc => {
+        list.innerHTML += `
+          <tr>
+            <td>${acc.username}</td>
+            <td>${acc.password}</td>
+            <td>${acc.gmail}</td>
+          </tr>`;
+      });
+    }
+
+    function addAccount() {
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+      const gmail = document.getElementById("gmail").value;
+
+      if (username && password && gmail) {
+        accounts.push({ username, password, gmail });
+        localStorage.setItem("accounts", JSON.stringify(accounts));
+        renderAccounts();
+        document.getElementById("username").value = "";
+        document.getElementById("password").value = "";
+        document.getElementById("gmail").value = "";
+      } else {
+        alert("Vui lòng nhập đầy đủ thông tin!");
+      }
+    }
+
+    renderAccounts();
+  </script>
+</body>
+</html>
